@@ -58,6 +58,7 @@ app.post('/signup', async (req, res) => {
 
     } catch (err) {
         console.log(err);
+        res.status(500).send('Error creating user');
     } finally {
         await client.close();
     }
@@ -92,6 +93,7 @@ app.post('/login', async (req, res) => {
 
     } catch (err) {
         console.log(err);
+        res.status(500).send('Error logging in');
     } finally {
         await client.close();
     }
@@ -111,6 +113,9 @@ app.get('/user', async (req, res) => {
         const user = await users.findOne(query);
         res.send(user);
 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching user');
     } finally {
         await client.close();
     }
@@ -132,6 +137,9 @@ app.put('/addmatch', async (req, res) => {
         };
         const user = await users.updateOne(query, updateDocument);
         res.send(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error updating match');
     } finally {
         await client.close();
     }
@@ -161,6 +169,9 @@ app.get('/users', async (req, res) => {
 
         res.json(foundUsers);
 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching users');
     } finally {
         await client.close();
     }
@@ -179,6 +190,9 @@ app.get('/gendered-users', async (req, res) => {
         const foundUsers = await users.find(query).toArray();
         res.json(foundUsers);
 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching gendered users');
     } finally {
         await client.close();
     }
@@ -215,6 +229,9 @@ app.put('/user', async (req, res) => {
 
         res.json(insertedUser);
 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error updating user');
     } finally {
         await client.close();
     }
@@ -235,6 +252,9 @@ app.get('/messages', async (req, res) => {
         };
         const foundMessages = await messages.find(query).toArray();
         res.send(foundMessages);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching messages');
     } finally {
         await client.close();
     }
@@ -252,6 +272,9 @@ app.post('/message', async (req, res) => {
 
         const insertedMessage = await messages.insertOne(message);
         res.send(insertedMessage);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error adding message');
     } finally {
         await client.close();
     }
