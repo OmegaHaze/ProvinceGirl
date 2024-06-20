@@ -1,24 +1,24 @@
-import Nav from '../components/Nav'
-import AuthModal from "../components/AuthModal"
-import {useState} from 'react'
-import {useCookies} from "react-cookie"
+import Nav from '../components/Nav';
+import AuthModal from "../components/AuthModal";
+import { useState } from 'react';
+import { useCookies } from "react-cookie";
 
-const Home = ({ removeCookie }) => {  // Receive removeCookie as a prop
-    const [showModal, setShowModal] = useState(false)
-    const [isSignUp, setIsSignUp] = useState(true)
-    const [cookies] = useCookies(['user'])
-    const authToken = cookies.AuthToken
+const Home = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(true);
+    const [cookies, setCookie, removeCookie] = useCookies(['user']);
+    const authToken = cookies.AuthToken;
 
     const handleClick = () => {
         if (authToken) {
-            removeCookie('UserId', { path: '/' })  // Correct usage of removeCookie
-            removeCookie('AuthToken', { path: '/' })  // Correct usage of removeCookie
-            window.location.reload()
-            return
+            removeCookie('UserId', cookies.UserId);
+            removeCookie('AuthToken', cookies.AuthToken);
+            window.location.reload();
+            return;
         }
-        setShowModal(true)
-        setIsSignUp(true)
-    }
+        setShowModal(true);
+        setIsSignUp(true);
+    };
 
     return (
         <div className="overlay">
@@ -36,11 +36,11 @@ const Home = ({ removeCookie }) => {  // Receive removeCookie as a prop
                 </button>
 
                 {showModal && (
-                    <AuthModal setShowModal={setShowModal} isSignUp={isSignUp}/>
+                    <AuthModal setShowModal={setShowModal} isSignUp={isSignUp} />
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Home
+export default Home;
