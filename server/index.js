@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const { MongoClient } = require('mongodb');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
@@ -7,15 +8,18 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const uri = process.env.URI;
-const PORT = process.env.PORT || 8000;  // Use Heroku's port or fallback to 8000
+const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Default
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Default route
 app.get('/', (req, res) => {
-    res.json('Hello to my app');
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // Sign up to the Database
@@ -47,7 +51,7 @@ app.post('/signup', async (req, res) => {
 
         const insertedUser = await users.insertOne(data);
 
-        const token = jwt.sign(insertedUser, sanitizedEmail, {
+        const token = jwt.sign({ userId: generatedUserId }, sanitizedEmail, {
             expiresIn: 60 * 24
         });
         res.status(201).json({ token, userId: generatedUserId });
@@ -71,10 +75,14 @@ app.post('/login', async (req, res) => {
 
         const user = await users.findOne({ email });
 
+        if (!user) {
+            return res.status(400).json('Invalid Credentials');
+        }
+
         const correctPassword = await bcrypt.compare(password, user.hashed_password);
 
         if (user && correctPassword) {
-            const token = jwt.sign(user, email, {
+            const token = jwt.sign({ userId: user.user_id }, email, {
                 expiresIn: 60 * 24
             });
             res.status(201).json({ token, userId: user.user_id });
@@ -139,16 +147,15 @@ app.get('/users', async (req, res) => {
         const database = client.db('app-data');
         const users = database.collection('users');
 
-        const pipeline =
-            [
-                {
-                    '$match': {
-                        'user_id': {
-                            '$in': userIds
-                        }
+        const pipeline = [
+            {
+                '$match': {
+                    'user_id': {
+                        '$in': userIds
                     }
                 }
-            ];
+            }
+        ];
 
         const foundUsers = await users.aggregate(pipeline).toArray();
 
@@ -250,4 +257,9 @@ app.post('/message', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => console.log('server running on PORT ' + PORT));
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+app.listen(PORT, () => console.log(`server running on PORT ${PORT}`));
