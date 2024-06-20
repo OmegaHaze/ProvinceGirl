@@ -1,41 +1,40 @@
 import Chat from './Chat'
 import ChatInput from './ChatInput'
 import axios from 'axios'
-import {useState, useEffect} from "react"
+import { useState, useEffect, useCallback } from "react"
 
-
-const ChatDisplay = ({ user , clickedUser }) => {
+const ChatDisplay = ({ user, clickedUser }) => {
     const userId = user?.user_id
     const clickedUserId = clickedUser?.user_id
     const [usersMessages, setUsersMessages] = useState(null)
     const [clickedUsersMessages, setClickedUsersMessages] = useState(null)
 
-    const getUsersMessages = async () => {
-     try {
-            const response = await axios.get('http://localhost:8000/messages', {
-                params: { userId: userId, correspondingUserId: clickedUserId}
-            })
-         setUsersMessages(response.data)
-        } catch (error) {
-         console.log(error)
-     }
-    }
-
-    const getClickedUsersMessages = async () => {
+    const getUsersMessages = useCallback(async () => {
         try {
             const response = await axios.get('http://localhost:8000/messages', {
-                params: { userId: clickedUserId , correspondingUserId: userId}
+                params: { userId: userId, correspondingUserId: clickedUserId }
+            })
+            setUsersMessages(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }, [userId, clickedUserId])
+
+    const getClickedUsersMessages = useCallback(async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/messages', {
+                params: { userId: clickedUserId, correspondingUserId: userId }
             })
             setClickedUsersMessages(response.data)
         } catch (error) {
             console.log(error)
         }
-    }
+    }, [userId, clickedUserId])
 
     useEffect(() => {
         getUsersMessages()
         getClickedUsersMessages()
-    }, [])
+    }, [getUsersMessages, getClickedUsersMessages])
 
     const messages = []
 
@@ -57,14 +56,14 @@ const ChatDisplay = ({ user , clickedUser }) => {
         messages.push(formattedMessage)
     })
 
-    const descendingOrderMessages = messages?.sort((a,b) => a.timestamp.localeCompare(b.timestamp))
+    const descendingOrderMessages = messages?.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
     return (
         <>
-        <Chat descendingOrderMessages={descendingOrderMessages}/>
-     <ChatInput
-         user={user}
-         clickedUser={clickedUser} getUserMessages={getUsersMessages} getClickedUsersMessages={getClickedUsersMessages}/>
+            <Chat descendingOrderMessages={descendingOrderMessages} />
+            <ChatInput
+                user={user}
+                clickedUser={clickedUser} getUserMessages={getUsersMessages} getClickedUsersMessages={getClickedUsersMessages} />
         </>
     )
 }

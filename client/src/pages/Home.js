@@ -3,16 +3,16 @@ import AuthModal from "../components/AuthModal"
 import {useState} from 'react'
 import {useCookies} from "react-cookie"
 
-const Home = () => {
+const Home = ({ removeCookie }) => {  // Receive removeCookie as a prop
     const [showModal, setShowModal] = useState(false)
     const [isSignUp, setIsSignUp] = useState(true)
-    const [cookies, , removeCookie] = useCookies(['user']) // <-- Removed unused variable setCookie
+    const [cookies] = useCookies(['user'])
     const authToken = cookies.AuthToken
 
     const handleClick = () => {
         if (authToken) {
-            removeCookie('UserId', cookies.UserId)
-            removeCookie('AuthToken', cookies.AuthToken)
+            removeCookie('UserId', { path: '/' })  // Correct usage of removeCookie
+            removeCookie('AuthToken', { path: '/' })  // Correct usage of removeCookie
             window.location.reload()
             return
         }
@@ -42,4 +42,5 @@ const Home = () => {
         </div>
     )
 }
+
 export default Home
