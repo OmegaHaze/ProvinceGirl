@@ -2,6 +2,6 @@
   "name": "province-girl",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm --prefix server start"
+    "start": "npm --prefix server run start:backend"
   }
 }
