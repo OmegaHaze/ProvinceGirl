@@ -6,7 +6,7 @@ import {useCookies} from "react-cookie"
 const Home = () => {
     const [showModal, setShowModal] = useState(false)
     const [isSignUp, setIsSignUp] = useState(true)
-    const [cookies, setCookie, removeCookie] = useCookies(['user'])
+    const [cookies, , removeCookie] = useCookies(['user']) // <-- Removed unused variable setCookie
     const authToken = cookies.AuthToken
 
     const handleClick = () => {
@@ -34,7 +34,6 @@ const Home = () => {
                 <button className="primary-button" onClick={handleClick}>
                     {authToken ? 'Signout' : 'Create Account'}
                 </button>
-
 
                 {showModal && (
                     <AuthModal setShowModal={setShowModal} isSignUp={isSignUp}/>
