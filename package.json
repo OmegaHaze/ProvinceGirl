@@ -2,7 +2,7 @@
   "name": "province-girl",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm --prefix server run start:backend",
-    "heroku-postbuild": "npm install --prefix server"
+    "start": "npm --prefix server run start",
+    "heroku-postbuild": "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
   }
 }
