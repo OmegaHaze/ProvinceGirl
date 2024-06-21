@@ -11,7 +11,11 @@ const uri = process.env.URI;
 const PORT = process.env.PORT || 8000;
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://your-frontend-url.com', // Replace with your frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Allow cookies to be sent with requests
+}));
 app.use(express.json());
 
 // Serve static files from the React app
