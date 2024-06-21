@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(cors({
-    origin: 'http://your-frontend-url.com', // Replace with your frontend URL
+    origin: 'https://province-girl-5758fff0c8af.herokuapp.com/', // Replace with your frontend URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Allow cookies to be sent with requests
 }));
