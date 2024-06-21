@@ -1,23 +1,11 @@
-import Home from './pages/Home'
-import Dashboard from './pages/Dashboard'
-import OnBoarding from './pages/OnBoarding'
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import {useCookies} from 'react-cookie'
+import React from 'react';
 
 const App = () => {
-    const [cookies, , removeCookie] = useCookies(['user'])  // Removed setCookie since it is not used
+  return (
+    <div>
+      <h1>Hello, World!</h1>
+    </div>
+  );
+};
 
-    const authToken = cookies.AuthToken
-
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home removeCookie={removeCookie}/>}/> {/* Pass removeCookie to Home component */}
-                {authToken && <Route path="/dashboard" element={<Dashboard/>}/>}
-                {authToken && <Route path="/onboarding" element={<OnBoarding/>}/>}
-            </Routes>
-        </BrowserRouter>
-    )
-}
-
-export default App
+export default App;
